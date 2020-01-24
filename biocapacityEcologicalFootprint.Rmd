@@ -2,28 +2,20 @@
 title: "R Notebook"
 output: html_notebook
 ---
-```{r, setup}
+```{r}
 library(ggplot2)
 library(readxl)
 library(dplyr)
 library(magrittr)
 library(stringr)
 library(factoextra)
-library(dendextend)
 
-```
-Klaszterelemzés:
-```{r}
 dataToCluster <- read.csv("dataToCluster.csv", row.names = 1)
 
 dists <- dist(dataToCluster)
 clustered <- hcut(dists, k = 10, method = "ward.D2")
-
-clusterPlot <- fviz_cluster(clustered, data = dists)
-
-print(clusterPlot)
                   
-dendrogram <- fviz_dend(clustered, height = 200, cex = 0.5, ggtheme = theme_minimal(), lower_rect = 100, horiz = TRUE, main = "", ylab = "")
+dendrogram <- fviz_dend(clustered, height = 200, cex = 0.5, ggtheme = theme(panel.grid = element_blank(), panel.background = element_blank()), lower_rect = 100, horiz = TRUE, main = "", ylab = "")
 
 print(dendrogram)
 

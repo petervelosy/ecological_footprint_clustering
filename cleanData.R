@@ -4,7 +4,6 @@ library(dplyr)
 library(magrittr)
 library(stringr)
 library(factoextra)
-library(dendextend)
 
 raw.allCountries <- read_excel("biokapacitas_okologiai_labnyom.xlsx")
 raw.2bExcluded <- read_excel("biokapacitas_okologiai_labnyom_2Bnelkul.xlsx")
@@ -57,14 +56,9 @@ countriesToKeep <- c("Argentína", "Azerbajdzsán", "Bangladesh", "Botswana", "B
 
 data.unified <- data.unified %>%
   filter(Orszag %in% countriesToKeep) %>%
-  select(-Osszes_BC, -Osszes_a_tablazatban_BC, -Osszes_EF, -Osszes_a_tablazatban_EF)
+  select(-Osszes_BC, -Osszes_a_tablazatban_BC, -Osszes_EF, -Osszes_a_tablazatban_EF, -Adatminoseg_BC, -Adatminoseg_EF)
 
-dataToCluster <- data.unified[-length(data.unified)][-1]
+dataToCluster <- data.unified[-1]
 rownames(dataToCluster) <- data.unified$Orszag
-
-alternativeNamesInCorrectOrder <- lapply(data.unified$Orszag, function(name) {
-  alternativeNames %>%
-    sele
-})
 
 write.csv(dataToCluster, file = "dataToCluster.csv", row.names = TRUE)
