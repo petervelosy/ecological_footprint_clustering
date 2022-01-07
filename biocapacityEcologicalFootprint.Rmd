@@ -19,6 +19,12 @@ dendrogram <- fviz_dend(clustered, height = 200, cex = 0.5, ggtheme = theme(pane
 
 print(dendrogram)
 
-ggsave("clusterAnalysis.png", dendrogram, device = png())
+fileConn<-file("analysis_filename.txt")
+fileContents <- readLines(fileConn)
+close(fileConn)
+
+filename <- paste(fileContents, ".png", sep = "")
+
+ggsave(filename, dendrogram, device = png())
 
 ```

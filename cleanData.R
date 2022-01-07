@@ -5,6 +5,11 @@ library(magrittr)
 library(stringr)
 library(factoextra)
 
+# Analysis type:
+useFakeNames <- TRUE
+useBC <- FALSE
+useEF <- TRUE
+
 raw.allCountries <- read_excel("biokapacitas_okologiai_labnyom.xlsx")
 raw.2bExcluded <- read_excel("biokapacitas_okologiai_labnyom_2Bnelkul.xlsx")
 
@@ -50,15 +55,47 @@ colnames(raw.footprint.unified)[-1] <- lapply(colnames(raw.footprint.unified)[-1
 
 colnames(raw.biocapacity.unified)[-1] <- lapply(colnames(raw.biocapacity.unified)[-1], paste, "_BC", sep="")
 
-data.unified <- cbind(raw.biocapacity.unified[1], raw.biocapacity.unified[-1], raw.footprint.unified[-1])
-
 countriesToKeep <- c("Azerbajdzsán", "Bangladesh", "Burundi", "Chile", "Csehország", "Dánia",   "Dél-Korea",   "Észak-Korea",   "Finnország",   "Görögország",   "Horvátország",   "Japán",   "Jemen",   "Kelet-Timor",   "Kína",   "Lengyelország",   "Lesotho",   "Líbia",   "Magyarország",   "Norvégia",   "Olaszország",   "Örményország",   "Paraguay", "Portugália",   "Ruanda", "Szaúd-Arábia",   "Szíria", "Szomália",  "Szváziföld (Eswatini)", "Tunézia")
 
-data.unified <- data.unified %>%
-  filter(Orszag %in% countriesToKeep) %>%
-  select(-Osszes_BC, -Osszes_a_tablazatban_BC, -Osszes_EF, -Osszes_a_tablazatban_EF, -Adatminoseg_BC, -Adatminoseg_EF)
+if (useBC && useEF) {
+  data.unified <- cbind(raw.biocapacity.unified[1], raw.biocapacity.unified[-1], raw.footprint.unified[-1])
+  data.unified <- data.unified %>%
+    filter(Orszag %in% countriesToKeep) %>%
+    select(-Osszes_BC, -Osszes_a_tablazatban_BC, -Osszes_EF, -Osszes_a_tablazatban_EF, -Adatminoseg_BC, -Adatminoseg_EF)
+} else if (useBC) {
+  data.unified <- cbind(raw.biocapacity.unified[1], raw.biocapacity.unified[-1])
+  data.unified <- data.unified %>%
+    filter(Orszag %in% countriesToKeep) %>%
+    select(-Osszes_BC, -Osszes_a_tablazatban_BC, -Adatminoseg_BC)
+} else if (useEF) {
+  data.unified <- cbind(raw.biocapacity.unified[1], raw.footprint.unified[-1])
+  data.unified <- data.unified %>%
+    filter(Orszag %in% countriesToKeep) %>%
+    select(-Osszes_EF, -Osszes_a_tablazatban_EF, -Adatminoseg_EF)
+}
 
 dataToCluster <- data.unified[-1]
-rownames(dataToCluster) <- data.unified$Orszag
+if (useFakeNames) {
+  rownames(dataToCluster) <- alternativeNames$alt_name
+} else {
+  rownames(dataToCluster) <- data.unified$Orszag
+}
 
 write.csv(dataToCluster, file = "dataToCluster.csv", row.names = TRUE)
+
+if (useFakeNames) {
+  filename <- "clusterAnalysis_fakenames"
+} else {
+  filename <- "clusterAnalysis_realnames"
+}
+
+if (useBC) {
+  filename <- paste(filename, "_bc", sep="")
+}
+if (useEF) {
+  filename <- paste(filename, "_ef", sep="")
+}
+
+fileConn<-file("analysis_filename.txt")
+writeLines(filename, fileConn)
+close(fileConn)
