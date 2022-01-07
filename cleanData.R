@@ -52,7 +52,7 @@ colnames(raw.biocapacity.unified)[-1] <- lapply(colnames(raw.biocapacity.unified
 
 data.unified <- cbind(raw.biocapacity.unified[1], raw.biocapacity.unified[-1], raw.footprint.unified[-1])
 
-countriesToKeep <- c("Argentína", "Azerbajdzsán", "Bangladesh", "Botswana", "Burundi", "Csehország", "Dánia",   "Dél-Korea",   "Észak-Korea",   "Finnország",   "Görögország",   "Horvátország",   "Japán",   "Jemen",   "Kelet-Timor",   "Kína",   "Lengyelország",   "Lesotho",   "Líbia",   "Magyarország",   "Norvégia",   "Olaszország",   "Örményország",   "Portugália",   "Ruanda", "Szaúd-Arábia",   "Szíria", "Szlovénia",  "Szváziföld (Eswatini)", "Tunézia",   "Uruguay")
+countriesToKeep <- c("Azerbajdzsán", "Bangladesh", "Burundi", "Chile", "Csehország", "Dánia",   "Dél-Korea",   "Észak-Korea",   "Finnország",   "Görögország",   "Horvátország",   "Japán",   "Jemen",   "Kelet-Timor",   "Kína",   "Lengyelország",   "Lesotho",   "Líbia",   "Magyarország",   "Norvégia",   "Olaszország",   "Örményország",   "Paraguay", "Portugália",   "Ruanda", "Szaúd-Arábia",   "Szíria", "Szomália",  "Szváziföld (Eswatini)", "Tunézia")
 
 data.unified <- data.unified %>%
   filter(Orszag %in% countriesToKeep) %>%
